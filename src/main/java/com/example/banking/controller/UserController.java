@@ -1,4 +1,5 @@
 package com.example.banking.controller;
+
 import com.example.banking.model.User;
 import com.example.banking.service.UserService;
 
@@ -9,25 +10,35 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
 import java.util.List;
-@RestController 
+
+@RestController
 public class UserController {
-    private UserService userService = new UserService();
+
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/users")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
-
     }
+
     @PostMapping("/users")
     public void addUser(@RequestBody User user) {
         userService.addUser(user);
     }
+
     @PutMapping("/users/{userid}")
-    public void replaceUser(@PathVariable int userid, @RequestBody User newUser) {
+    public void replaceUser(@PathVariable int userid,
+                            @RequestBody User newUser) {
         userService.replaceUser(userid, newUser);
     }
-    @DeleteMapping ("/users/{userid}")
+
+    @DeleteMapping("/users/{userid}")
     public void removeUser(@PathVariable int userid) {
         userService.removeUser(userid);
     }

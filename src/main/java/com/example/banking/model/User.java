@@ -1,6 +1,9 @@
 package com.example.banking.model;
-
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+@Entity
 public class User {
+    @Id
     private int userid;
     private String username;
     private String accno;
