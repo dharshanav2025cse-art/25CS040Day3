@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Account Details</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 11px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 25px;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <h2>Account Details</h2>
+
+
+    <div class="form-group">
+
+        <label>Account ID</label>
+
+        <input
+                type="number"
+                id="accountid"
+                placeholder="Enter account ID">
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label>Account Number</label>
+
+        <input
+                type="text"
+                id="accountnumber"
+                placeholder="Enter account number">
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label>Account Type</label>
+
+        <select id="accounttype">
+
+            <option value="Savings">Savings</option>
+
+            <option value="Current">Current</option>
+
+        </select>
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label>Balance</label>
+
+        <input
+                type="number"
+                id="balance"
+                placeholder="Enter balance">
+
+    </div>
+
+
+    <button onclick="saveData()">
+        Save Account
+    </button>
+
+
+    <table>
+
+        <thead>
+
+        <tr>
+
+            <th>ID</th>
+
+            <th>Account Number</th>
+
+            <th>Account Type</th>
+
+            <th>Balance</th>
+
+        </tr>
+
+        </thead>
+
+
+        <tbody id="tableBody">
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<script>
+
+    async function saveData() {
+
+        const accountid =
+            document.getElementById("accountid").value;
+
+        const accountnumber =
+            document.getElementById("accountnumber").value;
+
+        const accounttype =
+            document.getElementById("accounttype").value;
+
+        const balance =
+            document.getElementById("balance").value;
+
+
+        // Check empty fields
+
+        if (
+            accountid === "" ||
+            accountnumber === "" ||
+            balance === ""
+        ) {
+
+            alert("Please fill all details");
+
+            return;
+        }
+
+
+        // Data that matches Account.java
+
+        const accountData = {
+
+            accountid: Number(accountid),
+
+            accountnumber: accountnumber,
+
+            accounttype: accounttype,
+
+            balance: Number(balance)
+
+        };
+
+
+        try {
+
+            // Connect to Spring Boot API
+
+            const response = await fetch(
+                "http://localhost:8080/account",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(accountData)
+                }
+            );
+
+
+            if (response.ok) {
+
+                const savedAccount =
+                    await response.json();
+
+
+                // Add saved account to table
+
+                const tableBody =
+                    document.getElementById("tableBody");
+
+
+                const row =
+                    tableBody.insertRow();
+
+
+                row.insertCell(0).innerText =
+                    savedAccount.accountid;
+
+                row.insertCell(1).innerText =
+                    savedAccount.accountnumber;
+
+                row.insertCell(2).innerText =
+                    savedAccount.accounttype;
+
+                row.insertCell(3).innerText =
+                    "₹ " + savedAccount.balance;
+
+
+                alert("Account Saved Successfully!");
+
+
+                // Clear inputs
+
+                document.getElementById("accountid").value = "";
+
+                document.getElementById("accountnumber").value = "";
+
+                document.getElementById("balance").value = "";
+
+            }
+
+            else {
+
+                alert("Failed to save account!");
+
+            }
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Cannot connect to Spring Boot API!"
+            );
+
+        }
+
+    }
+
+</script>
+
+
+</body>
+
+</html>

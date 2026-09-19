@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins="*")
 public class BankAccountController {
     private final BankAccountService bankAccountService;
     public BankAccountController(BankAccountService bankAccountService) {
